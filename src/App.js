@@ -24,7 +24,11 @@ function App() {
   });
   const onChange = (e) => {
     const newdata = e.target.value.replace(/,/g, '');
-    setForm({ ...form, [e.target.name]: newdata });
+    if (e.target.name === 'eidlAdvance' && newdata > 10000) {
+      setForm({ ...form, [e.target.name]: 10000 });
+    } else {
+      setForm({ ...form, [e.target.name]: newdata });
+    }
   };
   const {
     interest,
@@ -64,17 +68,27 @@ function App() {
     }
   };
   const totalLoanForgiven = () => {
-    if (payrollCostGreater) {
-      return totalAmount;
-    }
-    const percentDiff =
+    let percentDiff = 0;
+    percentDiff =
       (Number(loanEmployees) - Number(ftEmployees)) / Number(loanEmployees) ||
       0;
+    if (percentDiff < 0) {
+      percentDiff = 0;
+    }
+    if (payrollCostGreater) {
+      const sum =
+        totalAmount * (1 - percentDiff) -
+        Number(wageDecrease) -
+        Number(eidlAdvance);
+      if (sum < 0) return 0;
+      else return sum;
+    }
     const totalWithWageDecrease =
       (totalAmount - (totalAmount - payrollCost) + calculateOtherShit()) *
         (1 - percentDiff) -
       Number(wageDecrease) -
       Number(eidlAdvance);
+
     return totalWithWageDecrease > 0 && payrollCost > 0
       ? totalWithWageDecrease.toFixed(2)
       : 0;
@@ -233,7 +247,7 @@ function App() {
                 </InputGroup>
               </Form.Group>
               <Form.Group controlId="formBasicPassword">
-                <Label text="Amount of EIDL advance" />
+                <Label text="Amount of EIDL advance *Max of $10,000" />
                 <InputGroup>
                   <InputGroup.Prepend>
                     <InputGroup.Text id="inputGroupPrepend">$</InputGroup.Text>
