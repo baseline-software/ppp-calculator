@@ -51,7 +51,7 @@ function App() {
   // if atleast 75 percent return one if not return the percent
   const isPayroll75 = percentOf75 > 1 ? 1 : percentOf75;
 
-  const calculateOtherShit = () => {
+  const calculateOtherStuffBesidePayroll = () => {
     const otherStuffGreater25 =
       (Number(interest) + Number(utilities) + Number(rent)) / totalAmount >
       0.25;
@@ -84,7 +84,9 @@ function App() {
       else return sum;
     }
     const totalWithWageDecrease =
-      (totalAmount - (totalAmount - payrollCost) + calculateOtherShit()) *
+      (totalAmount -
+        (totalAmount - payrollCost) +
+        calculateOtherStuffBesidePayroll()) *
         (1 - percentDiff) -
       Number(wageDecrease) -
       Number(eidlAdvance);
